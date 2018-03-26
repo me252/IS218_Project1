@@ -16,19 +16,34 @@ function reg_chk ($fname , $lname, $email, $phone, $birthday, $gender, $password
 
 function register ($fname , $lname, $email, $phone, $birthday, $gender, $password){
 	$cred = "SELECT * from accounts WHERE email = '$email'"; 
-	$cred_check = mysql_query($cred); //Query the DB using the $cred line
-	$r = mysql_fetch_array($cred_check); //return data from the DB as an array called $r
-	if ($r != NULL){ redirect ("This email is already in use." , "index.html");} //If $r has any data in it(aka there is an entry w/ this email) then tell user the email is in use
+	$cred_check = mysql_query($cred); 
+	$r = mysql_fetch_array($cred_check); 
+	if ($r != NULL){ redirect ("This email is already in use." , "index.html");} 
 	if ($r == NULL){
 		$reg_cmd = "INSERT INTO accounts (email, fname, lname, phone, birthday, gender, password) VALUES ('$email', '$fname', '$lname', '$phone', '$birthday', '$gender', '$password')";
 		mysql_query($reg_cmd) or die(mysql_error());
 		redirect ("You have successfully registered an account!" , "login.html");
-		// If the email is not already in database, add a line to the table with the information. Redirect to login.html
+		
 	}
 	
 }
 
-
+function login_chk($email , $password){
+	if ($email == "" || $password == "") redirect( "Missing field" , "login.html"); 
+	$cred = "SELECT * from accounts WHERE email = '$email'"; 
+	$cred_check = mysql_query($cred); 
+	$r = mysql_fetch_array($cred_check);
+	if ($r["email"] != $email) redirect("Email does not exist, please correct or register" , "login.html");
+	if ($r["email"] == $email) {
+		if ($r["password"] != $password) redirect ("Invalid password!" , "login.html");
+		if ($r["password"] == $password) {
+			$_SESSION ["fname"] = $r["fname"];
+			$_SESSION ["lname"] = $r["lname"];
+			redirect ("You have successfully logged in!", "account.php");}
+		}
+	
+	
+}
 
 
 
