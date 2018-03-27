@@ -19,5 +19,5 @@ $email  =  $_GET[ "email"  ];
 $password  =  $_GET[ "password"  ];
 
 
-
+login_chk($email , $password);
  ?>
